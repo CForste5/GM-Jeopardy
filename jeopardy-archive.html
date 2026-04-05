@@ -1,0 +1,368 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glenn & Marsha's Anniversary Jeopardy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+```
+    body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(180deg, #060CE9 0%, #0000AA 100%);
+        min-height: 100vh;
+        color: white;
+        padding: 20px;
+    }
+    
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    h1 {
+        text-align: center;
+        font-size: 2.5em;
+        margin: 20px 0;
+        text-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+        letter-spacing: 2px;
+    }
+    
+    .subtitle {
+        text-align: center;
+        font-size: 1.2em;
+        margin-bottom: 30px;
+        color: #FFD700;
+    }
+    
+    .board {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 8px;
+        margin: 20px 0;
+    }
+    
+    .category {
+        background: #060CE9;
+        padding: 20px 10px;
+        text-align: center;
+        font-size: 1.1em;
+        font-weight: bold;
+        border: 2px solid #000;
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-transform: uppercase;
+    }
+    
+    .clue {
+        background: #060CE9;
+        padding: 30px 10px;
+        text-align: center;
+        font-size: 2.5em;
+        font-weight: bold;
+        border: 2px solid #000;
+        cursor: pointer;
+        transition: all 0.3s;
+        color: #FFD700;
+        text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+    }
+    
+    .clue:hover {
+        background: #0808FF;
+        transform: scale(1.05);
+    }
+    
+    .final-jeopardy-btn {
+        background: #FFD700;
+        color: #000;
+        padding: 20px 40px;
+        font-size: 1.5em;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin: 30px auto;
+        display: block;
+        transition: all 0.3s;
+        text-shadow: none;
+    }
+    
+    .final-jeopardy-btn:hover {
+        transform: scale(1.05);
+        opacity: 0.9;
+    }
+    
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.9);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .modal.show {
+        display: flex;
+    }
+    
+    .modal-content {
+        background: #060CE9;
+        padding: 40px;
+        border-radius: 10px;
+        max-width: 900px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        text-align: center;
+        border: 4px solid #FFD700;
+    }
+    
+    .modal-value {
+        font-size: 3em;
+        color: #FFD700;
+        margin-bottom: 20px;
+    }
+    
+    .modal-question {
+        font-size: 1.8em;
+        margin: 30px 0;
+        line-height: 1.4;
+    }
+    
+    .modal-answer {
+        font-size: 1.5em;
+        margin: 30px 0;
+        padding: 20px;
+        background: rgba(255,215,0,0.2);
+        border-radius: 8px;
+        display: none;
+    }
+    
+    .modal-answer.show {
+        display: block;
+    }
+    
+    .answer-images {
+        display: flex;
+        justify-content: space-around;
+        gap: 20px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .answer-images img {
+        max-width: 200px;
+        max-height: 200px;
+        border-radius: 8px;
+        border: 3px solid #FFD700;
+    }
+    
+    .controls {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+        flex-wrap: wrap;
+    }
+    
+    button {
+        padding: 15px 30px;
+        font-size: 1.2em;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s;
+    }
+    
+    .btn-reveal {
+        background: #FFD700;
+        color: #000;
+    }
+    
+    .btn-close {
+        background: #666;
+        color: white;
+    }
+    
+    button:hover {
+        transform: scale(1.05);
+        opacity: 0.9;
+    }
+    
+    .final-jeopardy-title {
+        font-size: 2.5em;
+        color: #FFD700;
+        margin-bottom: 30px;
+        text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+    }
+</style>
+```
+
+</head>
+<body>
+    <div class="container">
+        <h1>Glenn & Marsha's Anniversary Jeopardy</h1>
+        <div class="subtitle">Click any question to view - Questions can be viewed multiple times!</div>
+
+```
+    <div class="board" id="board"></div>
+    
+    <button class="final-jeopardy-btn" onclick="openFinalJeopardy()">Final Jeopardy</button>
+</div>
+
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <div class="modal-value" id="modalValue"></div>
+        <div class="modal-question" id="modalQuestion"></div>
+        <div class="modal-answer" id="modalAnswer"></div>
+        <div class="controls">
+            <button class="btn-reveal" id="btnReveal">Reveal Answer</button>
+            <button class="btn-close" id="btnClose">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const gameData = {
+        categories: [
+            "Musical Moraks",
+            "War-aks",
+            "Morak-ellaneous",
+            "Marsha-isms",
+            "According to Glenn",
+            "Misdemeanors, Felonies & Moraks"
+        ],
+        questions: [
+            [
+                { value: 200, question: "Jeremy Morak was born and Glenn sang this song", answer: "It's a Boy by The Who" },
+                { value: 400, question: "The Beatles may not have had her in mind when they wrote it, but Glenn, Jess and Jeremy fixed the words to this song on Marsha's birthday in 2023.", answer: "When I'm 64" },
+                { value: 600, question: "The tune may have been inspired by Anna Tefka from Fiddler on the Roof, but it sounded a lot less like Broadway and a lot more like embarrassment in a crowded Greek restaurant when the family sang this song.", answer: "Grandma Janice birthday song" },
+                { value: 800, question: "Barry and Sandra Friedman got married without much fanfare, but they did receive a reprise of this song.", answer: "Hey Jude" },
+                { value: 1000, question: "Marsha requested \"no music\" for her birthday in Philadelphia, but Glenn and the kids rewrote this song anyway before deciding not to perform it.", answer: "Go Ask Alice by Jefferson Airplane" }
+            ],
+            [
+                { value: 200, question: "The Sherwood Diner is a place with great food and even better staff, but Glenn once nearly came to blows with a spicy waitress given this nickname.", answer: "Big Red" },
+                { value: 400, question: "When a rotund woman accused Jeremy of stealing a hose at the beach and confronted Glenn about it, he told her to move, claiming she was blocking this.", answer: "The sun" },
+                { value: 600, question: "When a school administrator got in the way of Jeremy's accommodations, Marsha gave her this torturous nickname.", answer: "Guantanamo Ruiz" },
+                { value: 800, question: "This woman told Marsha that Jessica's bat mitzvah date should be changed because she was a 3 and the other girl who had that date was a 5", answer: "Horse Face or Rubel" },
+                { value: 1000, question: "David Friedman's NYT best-seller contained an uncontested account detailing the shortcomings of his extended family and was titled this.", answer: "Memoirs of a Generation Screwed Jew" }
+            ],
+            [
+                { value: 200, question: "While her children were in school, Marsha was known as this mom.", answer: "The Mardi Gras mom" },
+                { value: 400, question: "Mortified to this day, Marsha embarrassed Jessica by aggressively handling a woman dressed as this Greek Goddess of love.", answer: "Venus de Milo" },
+                { value: 600, question: "Trying to relate to her soon-to-be relatives, Marsha introduced herself to Glenn's Brooklyn native parents as this.", answer: "Marsha Nathan, like the hot dog" },
+                { value: 800, question: "Thus establishing the Morak Boarding House for Korean Nationals, Marsha once invited this person to live in the attic.", answer: "Ron-hee" },
+                { value: 1000, question: "While watching Children of the Corn, Glenn convinced Marsha that the people of this cult were coming to take her away.", answer: "Life Spring" }
+            ],
+            [
+                { value: 200, question: "Messed up or fubar", answer: "booged" },
+                { value: 400, question: "Admit it or you know this is true", answer: "Don't say no" },
+                { value: 600, question: "Dinner is ready, it's outside your room", answer: "Food on step, step on step" },
+                { value: 800, question: "I love you this but not that", answer: "10 but not 7" },
+                { value: 1000, question: "Take a shower or be this", answer: "a flower" }
+            ],
+            [
+                { value: 200, question: "You are never too young to hate these people.", answer: "Nazis" },
+                { value: 400, question: "Happy Thanksgiving! If you're Glenn, it's time to listen to this song.", answer: "Alice's Restaurant" },
+                { value: 600, question: "This is the only acceptable parking space at Hewlett Elementary School when taking Jon to fly a kite.", answer: "Head Cook" },
+                { value: 800, question: "A master of efficiency, while traveling on the NYC subway system, Glenn will go to extremes to avoid doing this", answer: "Can't go past your destination even if it's a closer subway stop" },
+                { value: 1000, question: "Luckily, she married a nice Jewish boy. However, if Jessica were to marry someone of a swarthier persuasion, it must be this man to avoid disappointment.", answer: "Sidney Poitier" }
+            ],
+            [
+                { value: 200, question: "He became a defense attorney in part because of this show.", answer: "Judd for the Defense" },
+                { value: 400, question: "As a silver-tongued defense attorney, Glenn once exonerated a client based on the presence of this Italian dish.", answer: "Baked ziti" },
+                { value: 600, question: "Glenn once defended a cross-dresser who stabbed a man with this religious title.", answer: "Priest" },
+                { value: 800, question: "This one's not quite dead yet! Allen Abramson left this on Marsha's desk to mock her for incorrectly reporting an infant death as a budding ADA in Brooklyn.", answer: "A cabbage patch doll with a noose around its neck" },
+                { value: 1000, question: "A mother who loves her children almost as much as she loves technology, Marsha ran down this burglar to recover Jeremy's specialized laptop computer for vision.", answer: "Rahoot Wilson" }
+            ]
+        ]
+    };
+
+    const finalJeopardyData = {
+        question: "Glenn and Marsha's wedding featured the second best second line of all time. It didn't stop any traffic, but Glenn, Herman, and Archie's umbrellas were these three colors, respectively.",
+        answer: "Red, Yellow, and Green",
+        images: [
+            "https://cforste5.github.io/GM-Jeopardy/IMG_1005.PNG",
+            "https://cforste5.github.io/GM-Jeopardy/IMG_1008.PNG",
+            "https://cforste5.github.io/GM-Jeopardy/IMG_1007.PNG"
+        ]
+    };
+
+    function createBoard() {
+        const board = document.getElementById('board');
+        
+        gameData.categories.forEach(category => {
+            const div = document.createElement('div');
+            div.className = 'category';
+            div.textContent = category;
+            board.appendChild(div);
+        });
+        
+        for (let row = 0; row < 5; row++) {
+            for (let col = 0; col < 6; col++) {
+                const question = gameData.questions[col][row];
+                const div = document.createElement('div');
+                div.className = 'clue';
+                div.textContent = '$' + question.value;
+                div.onclick = () => openQuestion(col, row);
+                board.appendChild(div);
+            }
+        }
+    }
+
+    function openQuestion(col, row) {
+        const question = gameData.questions[col][row];
+        
+        document.getElementById('modalValue').textContent = '$' + question.value;
+        document.getElementById('modalQuestion').textContent = question.question;
+        document.getElementById('modalAnswer').textContent = question.answer;
+        document.getElementById('modalAnswer').classList.remove('show');
+        document.getElementById('modalAnswer').innerHTML = question.answer;
+        
+        document.getElementById('modal').classList.add('show');
+    }
+
+    function openFinalJeopardy() {
+        document.getElementById('modalValue').textContent = 'FINAL JEOPARDY';
+        document.getElementById('modalQuestion').textContent = finalJeopardyData.question;
+        document.getElementById('modalAnswer').innerHTML = `
+            <div style="font-size: 1.5em; margin-bottom: 20px;">${finalJeopardyData.answer}</div>
+            <div class="answer-images">
+                <img src="${finalJeopardyData.images[0]}" alt="Red umbrella - Glenn">
+                <img src="${finalJeopardyData.images[1]}" alt="Yellow umbrella - Herman">
+                <img src="${finalJeopardyData.images[2]}" alt="Green umbrella - Archie">
+            </div>
+        `;
+        document.getElementById('modalAnswer').classList.remove('show');
+        
+        document.getElementById('modal').classList.add('show');
+    }
+
+    document.getElementById('btnReveal').onclick = () => {
+        document.getElementById('modalAnswer').classList.add('show');
+    };
+
+    document.getElementById('btnClose').onclick = () => {
+        document.getElementById('modal').classList.remove('show');
+    };
+
+    createBoard();
+</script>
+```
+
+</body>
+</html>
